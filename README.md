@@ -1,4 +1,4 @@
-# Template für wissenschaftliche Arbeiten an der DHBW Ravensburg
+# Template für wissenschaftliche Arbeiten der DHBW Ravensburg
 
 ## Credits
 
