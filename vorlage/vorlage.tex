@@ -1,0 +1,243 @@
+\documentclass[a4paper,12pt]{article}                       
+% Seitenränder
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm,includehead]{geometry}
+\usepackage{ngerman}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[hyperfootnotes=false]{hyperref}
+\usepackage[nottoc]{tocbibind}
+\usepackage{makeidx}
+\usepackage[intoc]{nomencl}
+\usepackage{fancyhdr}
+\usepackage[round]{natbib}
+\usepackage{amsmath}
+\usepackage[labelfont=bf,aboveskip=1mm]{caption}
+\usepackage{setspace}
+\usepackage[bottom,multiple,hang,marginal]{footmisc}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{zref}
+\usepackage[toc,style=altlist,translate=false]{glossaries}
+\usepackage{glossaries-babel}
+
+
+%%%%%%%%%%%%%%%%%%%%%%% Definitionen bzgl. der Arbeit %%%%%%%%%%%%%%%%%%%%%%%
+\def\myType{0}           % [0=Seminararbeit|1=Projektarbeit|2=Bachelorarbeit]
+
+\def\myTopic{Theme der Arbeit}
+\def\mySubTopic{Untertitel}
+\def\myAutor{Dein Name}
+\def\myCompany{Name des Unternehmens}
+\def\myCompanyAddressStreet{Adresse des Unternehmens (Strase)}
+\def\myCompanyAddressCity{Adresse des Unternehmens (Ort)}
+\def\myProf{Name des betreuenden Professors}
+\def\myEndDate{Datum der Abgabe}
+
+
+%%%%%%%%%%%%%%%%%%%% Folgende Angaben für: Seminararbeit %%%%%%%%%%%%%%%%%%%%
+\def\myVorlesung{Name der Vorlesung}
+
+
+%%%%%%%%%%%%%%%%%%%% Folgende Angaben für: Projektarbeit %%%%%%%%%%%%%%%%%%%%
+\def\myProjNumber{Nummer der Projektarbeit}         % [1|2]
+\def\myPraxPhase{Studienjahr}                       % [1|2|3]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% Eigene Farbwerte definieren %%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{boxgray}{gray}{0.9}         % Hintergrundfarbe für Zitatboxen
+\definecolor{commentgray}{gray}{0.5}     % Grau für Kommentare in Quelltexten
+\definecolor{darkgreen}{rgb}{0,.5,0}     % Grün für Strings in Quelltexten
+
+%%%%%%%%%%%%%%%%%%%%%%%% Eigene Kommandos definieren %%%%%%%%%%%%%%%%%%%%%%%%
+% Definition von \gqq{#1: text}: Text in Anführungszeichen
+\newcommand{\gqq}[1]{\glqq #1\grqq}
+
+% Bulletpoints in Tabellen
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+% TODO: Neue Seite für jede Section, da input statt include verwendet wird.
+\newcommand{\sectionbreak}{\clearpage}
+
+% Definition von \footref{#1: label}
+% Verweis auf bereits existierende Fußnoten mittels
+\providecommand*{\footref}[1]{
+	\begingroup
+		\unrestored@protected@xdef\@thefnmark{\ref{#1}}
+	\endgroup
+\@footnotemark}
+
+% Definition von \mypageref{#1: label}
+% Kombination aus \ref{#1: label} und \pageref{#1: label}
+\newcommand{\mypageref}[1]{\ref{#1} auf Seite \pageref{#1}}
+
+% Definition von \myboxquote{#1: text}
+% grau hinterlegte Quotation-Umgebung (für Zitate)
+\newcommand{\myboxquote}[1]{
+	\begin{quotation}
+		\colorbox{boxgray}{\parbox{0.78\textwidth}{#1}}
+	\end{quotation}
+	\vspace*{1mm}
+}
+
+\makeatletter
+\zref@newprop*{appsec}{}
+\zref@addprop{main}{appsec}
+
+% Definition von \applabel{#1: label}{#2: text}
+% von \appsec{#1: text}{#2: label} zur Erzeugung des Labels verwendet)
+\def\applabel#1#2{%
+	\zref@setcurrent{appsec}{#2}%   
+	\zref@wrapper@immediate{\zref@label{#1}}%
+}
+
+% Definition von \appref{#1: label}
+% anstelle \ref{#1: label} zum referenzieren von Anhängen verwenden)
+\def\appref#1{%
+	\hyperref[#1]{\zref@extract{#1}{appsec}}%
+}
+\makeatother
+
+% Definition von \appsection{#1: text}{#2: label}
+% Ersetzt \section{#1: text} und \label{#2: label} für Anhänge)
+\newcommand{\theappsection}[1]{Anhang \Alph{section}:~\protect #1}
+\newcommand{\appsection}[2]{
+	\addtocounter{section}{1}
+	\phantomsection
+	\addcontentsline{toc}{section}{\theappsection{#1}}
+	\markboth{\theappsection{#1}}{}
+
+	\section*{\theappsection{#1}}
+	\applabel{#2}{Anhang \Alph{section}}
+	\label{#2}
+}
+
+
+%%%%%%%%%%%%% Index, Abkürzungsverzeichnis und Glossar erstellen %%%%%%%%%%%%
+\makeindex
+\makenomenclature
+\makeglossaries
+
+% Art der Zitierung (Havardmethode: Abkuerzung Autor + Jahr) %
+\bibliographystyle{dinat}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PDF-Optionen %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypersetup{
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	bookmarksopenlevel=0,
+	pdftitle=\myTopic,
+	pdfsubject=\myTopic,
+	pdfauthor=\myAutor,
+	pdfborder=0,
+	pdfstartview=Fit,
+	pdfpagelayout=SinglePage
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Kopf- und Fußzeile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Layout und Beschriftungen %%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Zeilenabstand
+\onehalfspacing
+\setlist{noitemsep}
+
+% Unterschriften für Tabellen und Abbildungen
+\addto\captionsngerman{
+  \renewcommand{\figurename}{Abb.}
+  \renewcommand{\tablename}{Tab.}
+}
+
+% Numerierungen je Sektion zurücksetzen
+\numberwithin{table}{section}
+\numberwithin{figure}{section}
+
+% Numerierungen mit Section
+\renewcommand{\thetable}{\arabic{section}.\arabic{table}}
+\renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
+
+% Sektionsbezeichnung von Fußnoten entfernen
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+% Fussnoten durch Komma trennen
+\renewcommand{\multfootsep}{, }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Listingstyle %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\lstset{
+	basicstyle=\ttfamily\scriptsize,
+	commentstyle=\color{commentgray}\textit,
+	showstringspaces=false,
+	stringstyle=\color{darkgreen},
+	keywordstyle=\color{blue},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	numbersep=15pt,
+	tabsize=2,
+	fontadjust=true,
+	frame=single,
+	backgroundcolor=\color{boxgray},
+	captionpos=b,
+	linewidth=0.94\linewidth,
+	xleftmargin=0.1\linewidth,
+	breaklines=true,
+	aboveskip=16pt
+}
+
+%Seiten und Kapitel einbinden
+\begin{document}
+	\pagenumbering{Roman}
+	% Wird automatisch ausgewählt.
+	\ifcase\myType
+		\input{pages/10_titel_seminar}
+	\or
+		\input{pages/10_titel_projekt}
+	\or
+		\input{pages/10_titel_bachelor}
+	\else
+	\fi
+	
+	\pagestyle{fancy}
+	\input{pages/11_sperrvermerk}
+	\input{pages/12_inhaltsverzeichnis}
+	\input{pages/13_abkuerzungsverzeichnis}
+	\input{pages/14_glossar}
+	\input{pages/15_abbildungsverzeichnis}
+	\input{pages/16_tabellenverzeichnis}
+	\input{pages/17_listingsverzeichnis}
+
+	% Kapitel
+	\pagestyle{fancy}
+	\fancyhead[L]{\nouppercase{\leftmark}}
+	\fancyhead[L]{\nouppercase{\rightmark}}
+	\pagenumbering{arabic}
+	\input{chapter/20_kapitel}
+		
+	% Anhang
+	% Tabellennummerierung mit Section
+	\renewcommand{\thetable}{\Alph{section}.\arabic{table}}
+	% Abbildungsnummerierung mit Section
+	\renewcommand{\thefigure}{\Alph{section}.\arabic{figure}}
+	% Listingsnummerierung mit Section
+	\renewcommand{\thelstlisting}{\Alph{section}.\arabic{lstlisting}}
+	
+	\begin{appendix}
+	%\include{chapter/30_anhang}
+	\end{appendix}
+	
+	% Abschluss
+	\input{pages/18_literaturverzeichnis}
+	\input{pages/19_index}
+	\input{pages/20_erklaerung}
+\end{document}
